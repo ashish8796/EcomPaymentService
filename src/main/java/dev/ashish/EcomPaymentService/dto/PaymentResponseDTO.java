@@ -11,10 +11,12 @@ import java.util.UUID;
 @Setter
 public class PaymentResponseDTO {
     private UUID orderId;
-    private UUID transactionId;
+    private String transactionId;
     private double amount;
     private PaymentStatus paymentStatus;
     private UUID paymentId;
+    private UUID userId;
+    private String currencyTag;
 
     public static PaymentResponseDTO from (Payment payment) {
         PaymentResponseDTO responseDTO = new PaymentResponseDTO();
@@ -24,6 +26,8 @@ public class PaymentResponseDTO {
         responseDTO.setPaymentStatus(payment.getPaymentStatus());
         responseDTO.setOrderId(payment.getOrderId());
         responseDTO.setTransactionId(payment.getTransactionId());
+        responseDTO.setCurrencyTag(payment.getCurrency().getCurrencyTag());
+        responseDTO.setUserId(payment.getUserId());
 
         return responseDTO;
     }

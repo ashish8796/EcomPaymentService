@@ -10,4 +10,6 @@ import java.util.UUID;
 public class PaymentRequestDTO {
     private double amount;
     private UUID orderId;
+    private UUID userId;
+    private String currencyTag;
 }

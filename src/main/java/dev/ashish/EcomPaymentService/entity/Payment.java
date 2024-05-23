@@ -1,9 +1,7 @@
 package dev.ashish.EcomPaymentService.entity;
 
 import dev.ashish.EcomPaymentService.entity.Enum.PaymentStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,8 +11,11 @@ import java.util.UUID;
 @Getter
 @Setter
 public class Payment extends BaseModel {
-    private UUID transactionId;
+    private String transactionId;
+    private UUID userId;
 
+    @OneToOne
+    private Currency currency;
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
     private double amount;

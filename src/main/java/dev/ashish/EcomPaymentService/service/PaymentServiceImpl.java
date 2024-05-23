@@ -23,14 +23,13 @@ public class PaymentServiceImpl implements PaymentService {
         if(savedPayment == null) {
             Payment payment = new Payment();
 
-            payment.setPaymentStatus(PaymentStatus.SUCCESSFUL);
+            payment.setPaymentStatus(PaymentStatus.SUCCESS);
             payment.setAmount(requestDTO.getAmount());
             payment.setOrderId(requestDTO.getOrderId());
-            payment.setTransactionId(UUID.randomUUID());
+            payment.setTransactionId(UUID.randomUUID().toString());
 
             return PaymentResponseDTO.from(paymentRepository.save(payment));
         }else {
-            System.out.println("Old payment is sent.");
             return PaymentResponseDTO.from(savedPayment);
         }
     }
