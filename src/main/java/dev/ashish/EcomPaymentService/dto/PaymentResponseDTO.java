@@ -17,8 +17,9 @@ public class PaymentResponseDTO {
     private UUID paymentId;
     private UUID userId;
     private String currencyTag;
+    private String paymentLink;
 
-    public static PaymentResponseDTO from (Payment payment) {
+    public static PaymentResponseDTO from (Payment payment, String paymentLink) {
         PaymentResponseDTO responseDTO = new PaymentResponseDTO();
 
         responseDTO.setPaymentId(payment.getId());

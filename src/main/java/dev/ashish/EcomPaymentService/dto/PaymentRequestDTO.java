@@ -12,4 +12,14 @@ public class PaymentRequestDTO {
     private UUID orderId;
     private UUID userId;
     private String currencyTag;
+
+    @Override
+    public String toString() {
+        return "PaymentRequestDTO{" +
+                "amount=" + amount +
+                ", orderId=" + orderId +
+                ", userId=" + userId +
+                ", currencyTag='" + currencyTag + '\'' +
+                '}';
+    }
 }
