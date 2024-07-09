@@ -15,24 +15,28 @@ import java.time.temporal.ChronoUnit;
 // Concrete strategy
 @Component
 public class RazorpayPaymentLinkGenerator implements PaymentLinkGeneratorStrategy {
-    @Autowired
-    private final RazorpayClientConfiguration rzpConfiguration;
+    private final RazorpayClient razorpayClient;
 
     @Autowired
-    public RazorpayPaymentLinkGenerator(RazorpayClientConfiguration rzpConfiguration) {
-        this.rzpConfiguration = rzpConfiguration;
+    public RazorpayPaymentLinkGenerator(RazorpayClient razorpayClient) {
+        this.razorpayClient = razorpayClient;
     }
 
     @Override
     public PaymentLinkResponse generatePaymentLink(Payment payment) {
         try {
-            RazorpayClient rzpClient = rzpConfiguration.getRazorpayClient();
             JSONObject paymentLinkRequest = new JSONObject();
             paymentLinkRequest.put("amount", payment.getAmount());
             paymentLinkRequest.put("currency", "INR");
             paymentLinkRequest.put("accept_partial", true);
             paymentLinkRequest.put("first_min_partial_amount", payment.getAmount());
-            paymentLinkRequest.put("expire_by", Instant.now().plus(10, ChronoUnit.MINUTES));
+
+            // Set expire_by to 15 minutes in the future and log it
+            long expireBy = Instant.now().plus(20, ChronoUnit.MINUTES).getEpochSecond();
+            System.out.println("Expire By (Unix timestamp): " + expireBy);
+            paymentLinkRequest.put("expire_by", expireBy);
+
+//            paymentLinkRequest.put("expire_by", Instant.now().plus(15, ChronoUnit.MINUTES).getEpochSecond());
             paymentLinkRequest.put("reference_id", payment.getTransactionId());
             paymentLinkRequest.put("description", "Payment for demo purpose.");
             JSONObject customer = new JSONObject();
@@ -48,11 +52,20 @@ public class RazorpayPaymentLinkGenerator implements PaymentLinkGeneratorStrateg
             paymentLinkRequest.put("callback_url", "https://example-callback-url.com/");
             paymentLinkRequest.put("callback_method", "get");
 
-            PaymentLink paymentLink = rzpClient.paymentLink.create(paymentLinkRequest);
+            PaymentLink paymentLink = razorpayClient.paymentLink.create(paymentLinkRequest);
 
-            System.out.println(paymentLink);
+            System.out.println("Razorpay Payment Link object: " + paymentLink);
 
-            return new RazorpayPaymentLinkResponse(paymentLink.get("short_url"), paymentLink.get("id"), paymentLink.get("currency"), paymentLink.get("amount"), paymentLink.get("description"));
+            // Get the amount as an Integer and then convert to double
+            Integer amount = (Integer) paymentLink.get("amount");
+            double amountDouble = amount.doubleValue();
+
+            return new RazorpayPaymentLinkResponse(
+                    paymentLink.get("short_url"),
+                    paymentLink.get("id"),
+                    paymentLink.get("currency"),
+                    amountDouble,
+                    paymentLink.get("description"));
         } catch (RazorpayException e) {
             System.out.println(e.getMessage());
             throw new RuntimeException(e);

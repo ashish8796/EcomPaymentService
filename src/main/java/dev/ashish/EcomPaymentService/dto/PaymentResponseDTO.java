@@ -27,8 +27,9 @@ public class PaymentResponseDTO {
         responseDTO.setPaymentStatus(payment.getPaymentStatus());
         responseDTO.setOrderId(payment.getOrderId());
         responseDTO.setTransactionId(payment.getTransactionId());
-        responseDTO.setCurrencyTag(payment.getCurrency().getCurrencyTag());
+//        responseDTO.setCurrencyTag(payment.getCurrency().getCurrencyTag());
         responseDTO.setUserId(payment.getUserId());
+        responseDTO.setPaymentLink(paymentLink);
 
         return responseDTO;
     }

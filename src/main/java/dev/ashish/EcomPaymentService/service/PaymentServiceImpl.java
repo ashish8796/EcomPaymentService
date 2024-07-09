@@ -1,6 +1,5 @@
 package dev.ashish.EcomPaymentService.service;
 
-import dev.ashish.EcomPaymentService.config.RazorpayClientConfiguration;
 import dev.ashish.EcomPaymentService.dto.PaymentRequestDTO;
 import dev.ashish.EcomPaymentService.dto.PaymentResponseDTO;
 import dev.ashish.EcomPaymentService.entity.Enum.PaymentStatus;
@@ -25,7 +24,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentResponseDTO createPayment(PaymentRequestDTO requestDTO) {
         Payment savedPayment = paymentRepository.findByOrderId(requestDTO.getOrderId());
-        PaymentLinkGenerator paymentLinkGenerator = new PaymentLinkGenerator(new RazorpayPaymentLinkGenerator(new RazorpayClientConfiguration()));
+        PaymentLinkGenerator paymentLinkGenerator = new PaymentLinkGenerator(razorpayPaymentLinkGenerator);
 
         //handling idempotency for same order id
         if (savedPayment == null) {
@@ -35,6 +34,7 @@ public class PaymentServiceImpl implements PaymentService {
             payment.setAmount(requestDTO.getAmount());
             payment.setOrderId(requestDTO.getOrderId());
             payment.setTransactionId(UUID.randomUUID().toString());
+            payment.setUserId(requestDTO.getUserId());
 
             PaymentLinkResponse paymentLink = paymentLinkGenerator.generatePaymentLink(payment);
 
