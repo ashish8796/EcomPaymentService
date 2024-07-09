@@ -4,6 +4,6 @@ public interface PaymentLinkResponse {
     String getPaymentLink();
     String getPaymentId();
     String getCurrency();
-    Long getAmount();
+    double getAmount();
     String getDescription();
 }
